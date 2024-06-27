@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chip Detector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .result {
+            margin-top: 20px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+        }
+        .directions {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        h1 {
+            text-align: center;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            text-align: left;
+        }
+        p {
+            text-align: center;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 10px;
+            max-width: 400px;
+            margin: 0 auto 10px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        #upload-form {
+            margin-bottom: 10px;
+        }
+        #detect-button {
+            margin-top: 10px;
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        #detect-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="directions">
+        <h1>Chip Detector</h1>
+        <p>How to Use This Site:</p>
+        <ul>
+            <li>1. Spread your poker chips flat on the table.</li>
+            <li>2. Take a photo of the poker chips.</li>
+            <li>3. Upload the photo to the website.</li>
+            <li>4. Press on "Detect Chips".</li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <form id="upload-form">
+            <input type="file" id="image" name="image" accept="image/*" required>
+        </form>
+        <button id="detect-button" onclick="detectChips()">Detect Chips</button>
+        <div class="result" id="result"></div>
+        <img id="annotated-image" src="" alt="">
+    </div>
+
+    <script>
+        async function detectChips() {
+            const formData = new FormData();
+            formData.append('image', document.getElementById('image').files[0]);
+
+            try {
+                const response = await fetch('/detect', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to detect chips.');
+                }
+
+                const result = await response.json();
+                document.getElementById('result').innerHTML = `${result.counts_text}<br>${result.total_value}`;
+                document.getElementById('annotated-image').src = result.annotated_image;
+            } catch (error) {
+                console.error('Error detecting chips:', error);
+                document.getElementById('result').innerHTML = 'Error detecting chips. Please try again.';
+            }
+        }
+    </script>
+</body>
+</html>
