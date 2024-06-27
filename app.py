@@ -9,7 +9,7 @@ from collections import Counter
 app = Flask(__name__)
 
 # Load YOLO model
-model_path = r'D:\projects\poker app\train20\weights\best.pt'
+model_path = r'train20/weights/best.pt'
 model = YOLO(model_path)
 
 
