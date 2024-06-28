@@ -100,7 +100,7 @@
                 }
 
                 const result = await response.json();
-                document.getElementById('result').innerHTML = `${result.counts_text}<br>${result.total_value}`;
+                document.getElementById('result').innerHTML = `${result.counts_text}<br>${result.total_value}<br>${result.total_number}`;
                 document.getElementById('annotated-image').src = result.annotated_image;
             } catch (error) {
                 console.error('Error detecting chips:', error);
