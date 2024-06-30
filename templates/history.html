@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detection History</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 10px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Detection History</h1>
+        <ul>
+            {% for record in history %}
+            <li>
+                <h2>Detected on: {{ record.timestamp }}</h2>
+                <p>{{ record.counts_text }}</p>
+                <p>Total number of chips: {{ record.total_number }}</p>
+                <p>Total value of chips: {{ record.total_value }}₪</p>
+            </li>
+            {% endfor %}
+        </ul>
+        <a class="back-link" href="{{ url_for('index') }}">Back to Home</a>
+    </div>
+</body>
+</html>

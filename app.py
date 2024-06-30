@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify, redirect, url_for
 import cv2
 import os
 import numpy as np
@@ -6,12 +6,16 @@ from ultralytics import YOLO
 import supervision as sv
 from collections import Counter
 from werkzeug.utils import secure_filename
+from datetime import datetime
 
 app = Flask(__name__)
 
 # Load YOLO model
 model_path = r'train20/weights/best.pt'
 model = YOLO(model_path)
+
+# Initialize history storage
+detection_history = []
 
 
 @app.route('/')
@@ -39,6 +43,18 @@ def detect():
         output_path = os.path.join('static/uploads', 'annotated_' + filename)
         cv2.imwrite(output_path, annotated_image)
 
+        detection_record = {
+            'filename': filename,
+            'counts_text': counts_text,
+            'total_number': len(chips_list),
+            'total_value': total_value,
+            'annotated_image': output_path,
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+
+        # Save to history
+        detection_history.append(detection_record)
+
         response = {
             'counts_text': counts_text,
             'total_number': f'total number of chips: {len(chips_list)}',
@@ -50,6 +66,11 @@ def detect():
 
     except Exception as e:
         return jsonify({'error': str(e)})
+
+
+@app.route('/history')
+def history():
+    return render_template('history.html', history=detection_history)
 
 
 def annotate_image(image, detections):
