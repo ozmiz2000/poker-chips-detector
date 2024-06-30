@@ -34,9 +34,21 @@
             text-align: center;
             margin-top: 20px;
         }
+        .menu {
+            list-style-type: none;
+            padding: 0;
+            text-align: left;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
+    <header>
+        <nav>
+            <p class="menu"><a href="{{ url_for('history') }}">History</a></p>
+            <p class="menu"><a href="{{ url_for('index') }}">Home</a></p>
+        </nav>
+    </header>
     <div class="container">
         <h1>Detection History</h1>
         <ul>

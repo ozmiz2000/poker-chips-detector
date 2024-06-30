@@ -88,12 +88,24 @@ def calculate_chips_and_value(detections):
     labels = [model.names[class_id] for class_id in detections.class_id]
     chips_list = []
     total_value = 0
+    c1 = 1
+    c25 = 0.25
+    c50 = 0.5
+    c500 = 2
+    c5000 = 10
+
     for label in labels:
         chips_list.append(label)
         if label == '1':
-            total_value += int(label)
-        else:
-            total_value += (int(label) / 100)
+            total_value += c1
+        elif label == '25':
+            total_value += c25
+        elif label == '50':
+            total_value += c50
+        elif label == '500':
+            total_value += c500
+        elif label == '1000':
+            total_value += c5000
     return chips_list, total_value
 
 
@@ -101,8 +113,7 @@ def format_counts_text(chips_list):
     counts = Counter(chips_list)
     counts_text = 'You have:\n'
     for element, count in counts.items():
-        pluralized_element = f"{element}s" if count > 1 else element
-        counts_text += f"{count}: {pluralized_element}\n"
+        counts_text += f"{count}: {element}₪, \n"
     return counts_text
 
 

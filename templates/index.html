@@ -35,7 +35,7 @@
             padding: 0;
             text-align: left;
         }
-        p {
+        .p {
             text-align: center;
             border-bottom: 2px solid #ccc;
             padding-bottom: 10px;
@@ -61,20 +61,24 @@
         #detect-button:hover {
             background-color: #45a049;
         }
+        .menu {
+            list-style-type: none;
+            padding: 0;
+            text-align: left;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
     <header>
         <nav>
-            <ul>
-                <li><a href="{{ url_for('history') }}">History</a></li>
-                <li><a href="{{ url_for('index') }}">Home</a></li>
-            </ul>
+            <p class="menu"><a href="{{ url_for('history') }}">History</a></p>
+            <p class="menu"><a href="{{ url_for('index') }}">Home</a></p>
         </nav>
     </header>
     <div class="directions">
         <h1>Chip Detector</h1>
-        <p>How to Use This Site:</p>
+        <p class="p">How to Use This Site:</p>
         <ul>
             <li>1. Spread your poker chips flat on the table.</li>
             <li>2. Take a photo of the poker chips.</li>
