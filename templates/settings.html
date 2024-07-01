@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detection History</title>
+    <title>Settings</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -20,22 +20,6 @@
         h1 {
             text-align: center;
             color: white;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-            text-align: left;
-            color: white;
-        }
-        li {
-            margin-bottom: 20px;
-            border-bottom: 2px solid #ccc;
-            padding-bottom: 10px;
-            position: relative;
-        }
-        img {
-            max-width: 100%;
-            height: auto;
         }
         .back-link {
             display: block;
@@ -64,9 +48,6 @@
         .menu a:hover {
             background-color: #45a049;
         }
-        .menu a:hover::after {
-            transform: scaleX(0); /* Disable the scaling animation */
-        }
         .menu a::after {
             content: '';
             position: absolute;
@@ -75,10 +56,16 @@
             width: 100%;
             height: 10px; /* Adjust the height of the rectangle */
             background-color: #45a049;
-            transform: scaleX(0); /* Start with no scaling */
+            transform: scaleX(0);
             transition: transform 0.3s ease-in-out;
             transform-origin: center;
             border-radius: 30px; /* Match the border radius of buttons */
+        }
+        .menu a:hover::after {
+            transform: scaleX(1);
+        }
+        .menu a:hover::after {
+            transform: scaleX(0); /* Disable the scaling animation */
         }
     </style>
 </head>
@@ -87,28 +74,13 @@
         <nav class="menu">
             <a href="{{ url_for('index') }}">Home</a>
             <span style="padding: 0 10px;">&nbsp;</span> <!-- Added space between links -->
-            <a style="background-color: #45a049;" href="{{ url_for('history') }}">History</a>
+            <a href="{{ url_for('history') }}">History</a>
             <span style="padding: 0 10px;">&nbsp;</span> <!-- Added space between links -->
-            <a href="{{ url_for('settings') }}">Settings</a>
+            <a style="background-color: #45a049;" href="{{ url_for('settings') }}">Settings</a>
         </nav>
     </header>
     <div class="container">
-        <h1>Detection History</h1>
-        {% if history %}
-        <ul>
-            {% for record in history %}
-            <li>
-                <h2>Detected on: {{ record.timestamp }}</h2>
-                <p>{{ record.counts_text }}</p>
-                <p>Total number of chips: {{ record.total_number }}</p>
-                <p>Total value of chips: {{ record.total_value }}₪</p>
-            </li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p class="p">No scanned items found.</p>
-        {% endif %}
-        <a class="back-link" href="{{ url_for('index') }}">Back to Home</a>
+        <h1>Site is not built yet</h1>
     </div>
 </body>
 </html>

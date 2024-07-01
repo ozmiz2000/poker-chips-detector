@@ -8,11 +8,14 @@
         body {
             font-family: Arial, sans-serif;
             padding: 20px;
+            margin: 0;
+            background-color: #333;
         }
         .container {
             max-width: 600px;
             margin: 0 auto;
             text-align: center;
+            color: white;
         }
         .result {
             margin-top: 20px;
@@ -29,69 +32,109 @@
         }
         h1 {
             text-align: center;
+            color: white;
         }
         ul {
             list-style-type: none;
             padding: 0;
             text-align: left;
-        }
-        .p {
-            text-align: center;
-            border-bottom: 2px solid #ccc;
-            padding-bottom: 10px;
-            max-width: 400px;
-            margin: 0 auto 10px;
+            color: white;
         }
         li {
             margin-bottom: 10px;
+            color: white;
         }
-        #upload-form {
-            margin-bottom: 10px;
-        }
-        #detect-button {
-            margin-top: 10px;
+        .upload-button, #detect-button {
             padding: 15px 30px;
-            font-size: 18px;
+            font-size: 21px;
             cursor: pointer;
             background-color: #4CAF50;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 30px; /* Make it round */
+            outline: none;
+            transition: background-color 0.3s;
+            display: inline-block;
+            margin-bottom: 10px;
         }
-        #detect-button:hover {
+        .upload-button:hover, #detect-button:hover {
             background-color: #45a049;
         }
         .menu {
-            list-style-type: none;
-            padding: 0;
-            text-align: left;
-            margin-bottom: 10px;
+            color: white;
+            padding: 10px 0;
+            text-align: start;
+            margin: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+        .menu a {
+            text-decoration: none;
+            padding: 0 10px; /* Added padding around each link */
+            font-size: 20px;
+            color: white;
+            display: inline-block;
+            transition: background-color 0.3s;
+            position: relative;
+            border-radius: 30px; /* Match the border radius of buttons */
+        }
+        .menu a:hover {
+            background-color: #45a049;
+        }
+        .menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -10px; /* Adjust the position from the bottom */
+            left: 0;
+            width: 100%;
+            height: 10px; /* Adjust the height of the rectangle */
+            background-color: #45a049;
+            transform: scaleX(0);
+            transition: transform 0.3s ease-in-out;
+            transform-origin: center;
+            border-radius: 30px; /* Match the border radius of buttons */
+        }
+        /* Remove hover animation for the Home menu link */
+        .menu a[href="{{ url_for('index') }}"]:hover::after {
+            transform: scaleX(0); /* No scaling on hover */
+        }
+        .rules {
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 20px;
+            position: relative;
+            color: white;
         }
     </style>
 </head>
 <body>
     <header>
-        <nav>
-            <p class="menu"><a href="{{ url_for('history') }}">History</a></p>
-            <p class="menu"><a href="{{ url_for('index') }}">Home</a></p>
+        <nav class="menu">
+            <a style="background-color: #45a049;" href="{{ url_for('index') }}">Home</a>
+            <span style="padding: 0 10px;">&nbsp;</span> <!-- Added space between links -->
+            <a href="{{ url_for('history') }}">History</a>
+            <span style="padding: 0 10px;">&nbsp;</span> <!-- Added space between links -->
+            <a href="{{ url_for('settings') }}">Settings</a>
         </nav>
     </header>
     <div class="directions">
         <h1>Chip Detector</h1>
-        <p class="p">How to Use This Site:</p>
+        <h2 class="rules">How to Use This Site:</h2>
         <ul>
             <li>1. Spread your poker chips flat on the table.</li>
             <li>2. Take a photo of the poker chips.</li>
             <li>3. Upload the photo to the website.</li>
-            <li>4. Press on "Detect Chips".</li>
+            <li class="rules">4. Press on "Detect Chips".</li>
         </ul>
     </div>
 
     <div class="container">
-        <form id="upload-form">
-            <input type="file" id="image" name="image" accept="image/*" required>
+        <button class="upload-button" onclick="document.getElementById('image').click()">העלאת תמונה</button>
+        <form id="upload-form" enctype="multipart/form-data">
+            <input type="file" id="image" name="image" accept="image/*" style="display: none;">
         </form>
-        <button id="detect-button" onclick="detectChips()">Detect Chips</button>
+
+        <button id="detect-button" onclick="detectChips()">חישוב תוצאה</button>
         <div class="result" id="result"></div>
         <img id="annotated-image" src="" alt="">
     </div>
