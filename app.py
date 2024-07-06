@@ -17,14 +17,13 @@ model = YOLO(model_path)
 # Initialize history storage
 detection_history = []
 
-
 @app.route('/')
 def index():
     return render_template('index.html')
+
 @app.route('/settings')
 def settings():
     return render_template('settings.html')
-
 
 @app.route('/detect', methods=['POST'])
 def detect():
@@ -70,11 +69,9 @@ def detect():
     except Exception as e:
         return jsonify({'error': str(e)})
 
-
 @app.route('/history')
 def history():
     return render_template('history.html', history=detection_history)
-
 
 def annotate_image(image, detections):
     bounding_box_annotator = sv.BoundingBoxAnnotator()
@@ -85,7 +82,6 @@ def annotate_image(image, detections):
     annotated_image = label_annotator.annotate(scene=annotated_image, detections=detections, labels=labels)
 
     return annotated_image
-
 
 def calculate_chips_and_value(detections):
     labels = [model.names[class_id] for class_id in detections.class_id]
@@ -111,7 +107,6 @@ def calculate_chips_and_value(detections):
             total_value += c5000
     return chips_list, total_value
 
-
 def format_counts_text(chips_list):
     counts = Counter(chips_list)
     counts_text = 'You have:\n'
@@ -119,9 +114,7 @@ def format_counts_text(chips_list):
         counts_text += f"{count}: {element}₪, \n"
     return counts_text
 
-
 if __name__ == '__main__':
     os.makedirs('uploads', exist_ok=True)
     os.makedirs('static/uploads', exist_ok=True)
     app.run(debug=False, host='0.0.0.0', port=os.environ.get('PORT', 5000))
-

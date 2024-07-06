@@ -105,6 +105,20 @@
             position: relative;
             color: white;
         }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loader {
+            border: 8px solid #f3f3f3; /* Light grey */
+            border-top: 8px solid #4CAF50; /* Green */
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 2s linear infinite;
+            display: none; /* Hidden by default */
+            margin: 20px auto;
+        }
     </style>
 </head>
 <body>
@@ -135,12 +149,21 @@
         </form>
 
         <button id="detect-button" onclick="detectChips()">חישוב תוצאה</button>
+        <div class="loader" id="loader"></div> <!-- Loader element -->
         <div class="result" id="result"></div>
         <img id="annotated-image" src="" alt="">
     </div>
 
     <script>
         async function detectChips() {
+            const loader = document.getElementById('loader');
+            const resultDiv = document.getElementById('result');
+            const annotatedImage = document.getElementById('annotated-image');
+
+            loader.style.display = 'block'; // Show the loader
+            resultDiv.innerHTML = ''; // Clear previous results
+            annotatedImage.src = ''; // Clear previous image
+
             const formData = new FormData();
             formData.append('image', document.getElementById('image').files[0]);
 
@@ -155,13 +178,15 @@
                 }
 
                 const result = await response.json();
-                document.getElementById('result').innerHTML = `${result.counts_text}<br>${result.total_value}<br>${result.total_number}`;
-                document.getElementById('annotated-image').src = result.annotated_image;
+                resultDiv.innerHTML = `${result.counts_text}<br>${result.total_value}<br>${result.total_number}`;
+                annotatedImage.src = result.annotated_image;
             } catch (error) {
                 console.error('Error detecting chips:', error);
-                document.getElementById('result').innerHTML = 'Error detecting chips. Please try again.';
+                resultDiv.innerHTML = 'Error detecting chips. Please try again.';
+            } finally {
+                loader.style.display = 'none'; // Hide the loader
             }
         }
     </script>
 </body>
-</html>
+</
