@@ -20,7 +20,7 @@
         .result {
             margin-top: 20px;
         }
-        img, video {
+        img {
             max-width: 100%;
             height: auto;
             margin-top: 20px;
@@ -44,7 +44,7 @@
             margin-bottom: 10px;
             color: white;
         }
-        .upload-button, #detect-button, #camera-button, #capture-button {
+        .upload-button, #detect-button {
             padding: 15px 30px;
             font-size: 21px;
             cursor: pointer;
@@ -57,7 +57,7 @@
             display: inline-block;
             margin-bottom: 10px;
         }
-        .upload-button:hover, #detect-button:hover, #camera-button:hover, #capture-button:hover {
+        .upload-button:hover, #detect-button:hover {
             background-color: #45a049;
         }
         .menu {
@@ -105,20 +105,6 @@
             position: relative;
             color: white;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .loader {
-            border: 8px solid #f3f3f3; /* Light grey */
-            border-top: 8px solid #4CAF50; /* Green */
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            animation: spin 2s linear infinite;
-            display: none; /* Hidden by default */
-            margin: 20px auto;
-        }
     </style>
 </head>
 <body>
@@ -148,86 +134,15 @@
             <input type="file" id="image" name="image" accept="image/*" style="display: none;">
         </form>
 
-        <button id="camera-button" onclick="openCamera()">פתח מצלמה</button>
-        <video id="video" autoplay style="display:none;"></video>
-        <button id="capture-button" onclick="capturePhoto()" style="display:none;">צלם תמונה</button>
-
         <button id="detect-button" onclick="detectChips()">חישוב תוצאה</button>
-        <div class="loader" id="loader"></div> <!-- Loader element -->
         <div class="result" id="result"></div>
         <img id="annotated-image" src="" alt="">
     </div>
 
     <script>
-        let videoStream;
-
-        async function openCamera() {
-            const video = document.getElementById('video');
-            const captureButton = document.getElementById('capture-button');
-
-            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                video.style.display = 'block';
-                captureButton.style.display = 'block';
-
-                videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
-                video.srcObject = videoStream;
-            } else {
-                alert('Camera API not supported by this browser.');
-            }
-        }
-
-        function capturePhoto() {
-            const video = document.getElementById('video');
-            const canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            const context = canvas.getContext('2d');
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const dataURL = canvas.toDataURL('image/png');
-
-            const imgElement = document.createElement('img');
-            imgElement.src = dataURL;
-            document.body.appendChild(imgElement); // Display the captured image (optional)
-
-            // Stop the video stream
-            videoStream.getTracks().forEach(track => track.stop());
-            video.style.display = 'none';
-            document.getElementById('capture-button').style.display = 'none';
-
-            // Convert dataURL to a File object and append to formData
-            const file = dataURLtoFile(dataURL, 'captured.png');
+        async function detectChips() {
             const formData = new FormData();
-            formData.append('image', file);
-
-            // Trigger the detectChips function with the captured image
-            detectChips(formData);
-        }
-
-        function dataURLtoFile(dataURL, filename) {
-            const arr = dataURL.split(',');
-            const mime = arr[0].match(/:(.*?);/)[1];
-            const bstr = atob(arr[1]);
-            let n = bstr.length;
-            const u8arr = new Uint8Array(n);
-            while(n--) {
-                u8arr[n] = bstr.charCodeAt(n);
-            }
-            return new File([u8arr], filename, { type: mime });
-        }
-
-        async function detectChips(formData = null) {
-            const loader = document.getElementById('loader');
-            const resultDiv = document.getElementById('result');
-            const annotatedImage = document.getElementById('annotated-image');
-
-            loader.style.display = 'block'; // Show the loader
-            resultDiv.innerHTML = ''; // Clear previous results
-            annotatedImage.src = ''; // Clear previous image
-
-            if (!formData) {
-                formData = new FormData();
-                formData.append('image', document.getElementById('image').files[0]);
-            }
+            formData.append('image', document.getElementById('image').files[0]);
 
             try {
                 const response = await fetch('/detect', {
@@ -240,13 +155,11 @@
                 }
 
                 const result = await response.json();
-                resultDiv.innerHTML = `${result.counts_text}<br>${result.total_value}<br>${result.total_number}`;
-                annotatedImage.src = result.annotated_image;
+                document.getElementById('result').innerHTML = `${result.counts_text}<br>${result.total_value}<br>${result.total_number}`;
+                document.getElementById('annotated-image').src = result.annotated_image;
             } catch (error) {
                 console.error('Error detecting chips:', error);
-                resultDiv.innerHTML = 'Error detecting chips. Please try again.';
-            } finally {
-                loader.style.display = 'none'; // Hide the loader after the process completes
+                document.getElementById('result').innerHTML = 'Error detecting chips. Please try again.';
             }
         }
     </script>
